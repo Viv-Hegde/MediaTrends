@@ -1,0 +1,155 @@
+/****************************** styles.css **************************************
+/* This file contains the code to style the main page (MediaTrends.html)
+/*
+/******************************************************************************/
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f2f2f2;
+    margin: 0;
+}
+
+h1 a {
+    text-decoration: none !important;
+}
+
+h1 a:visited {
+    text-decoration: none !important;
+    color: inherit;
+}
+
+.navbar {
+    background-color: #333;
+    color: #fff;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 20px;
+}
+
+.navbar-menu button {
+    background-color: #333;
+    color: #fff;
+    border: none;
+    height: 50px;
+}
+
+.navbar-menu button:hover {
+    background-color: #8a8989;
+}
+
+.logo {
+    font-size: 24px;
+    margin: 0;
+}
+
+.navbar-menu {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.navbar-menu li {
+    display: inline-block;
+    margin-left: 20px;
+}
+
+.navbar-menu a {
+    color: #fff;
+    text-decoration: none;
+}
+
+.container {
+    max-width: 1200px;
+    margin: 30px auto;
+    padding: 0 20px;
+}
+
+.favorite-container {
+    padding: 8px;
+    font-size: 16px;
+    border-radius: 4px;
+    border: none;
+    background-color: #e6e6e6;
+    margin-right: 10px;
+}
+
+.favorite-container select {
+    margin-bottom: 15px;
+}
+
+.favorite-container button[type="submit"] {
+    background-color: #1a1a1a;
+    color: #fff;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.filter-options {
+    padding: 8px;
+    font-size: 16px;
+    border-radius: 4px;
+    border: none;
+    background-color: #e6e6e6;
+    margin-right: 10px;
+}
+
+.filter-options label {
+    display: block;
+    margin-bottom: 10px;
+}
+
+.filter-options select {
+    margin-bottom: 10px;
+}
+
+.filter-options input[type="text"] {
+    width: 20%;
+    padding: 5px;
+    margin-bottom: 10px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    display: inline-block;
+}
+
+.filter-options button[type="submit"] {
+    background-color: #1a1a1a;
+    color: #fff;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.trending-movies h2 {
+    font-size: 30px;
+    font-weight: bold;
+    margin-bottom: 20px;
+}
+
+ul {
+    list-style: none;
+}
+
+.movie-card {
+    border: 1px solid #ccc;
+    padding: 20px;
+    margin-bottom: 20px;
+}
+
+.movie-details h3 {
+    font-size: 20px;
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+
+.movie-details p {
+    margin-bottom: 5px;
+}
+
+.hidden {
+    /* Used to override other display properties,
+     * .hidden should always take highest precedence */
+    display: none !important;
+}

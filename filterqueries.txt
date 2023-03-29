@@ -1,0 +1,256 @@
+\qecho  Query popular videos with filters
+
+
+/*
+SELECT videonum, V.id, V.name, L.name AS language, FS.name AS filmstudio, COUNT(*) AS views
+FROM WatchRecord WR
+    JOIN Video V ON (V.id = WR.videoid)
+    JOIN Language L ON (L.id = V.languageid)
+    LEFT JOIN FilmStudio FS ON (FS.id = V.filmstudioid)
+GROUP BY V.id, L.id, FS.id
+*/
+
+/*
+SELECT videonum, V.name, L.name AS language, FS.name AS filmstudio, COUNT(*) AS views
+FROM WatchRecord WR
+    JOIN Video V ON (V.id = WR.videoid)
+    JOIN Language L ON (L.id = V.languageid)
+    LEFT JOIN FilmStudio FS ON (FS.id = V.filmstudioid)
+GROUP BY V.id, L.id, FS.id
+ORDER BY views DESC
+LIMIT 10;
+*/
+
+
+\qecho Popular Videos By Genre:
+SELECT videonum, X.name, language, filmstudio, views
+FROM (
+    SELECT videonum, V.id, V.name, L.name AS language, FS.name AS filmstudio, COUNT(*) AS views
+    FROM WatchRecord WR
+        JOIN Video V ON (V.id = WR.videoid)
+        JOIN Language L ON (L.id = V.languageid)
+        LEFT JOIN FilmStudio FS ON (FS.id = V.filmstudioid)
+    GROUP BY V.id, L.id, FS.id
+) AS X
+    JOIN VideoToGenre VTG ON (VTG.videoid = X.id)
+    JOIN Genre G ON (G.id = VTG.genreid)
+WHERE G.name = <genre_name>
+ORDER BY views DESC
+LIMIT 10;
+
+\qecho By Language:
+SELECT videonum, V.name, L.name AS language, FS.name AS filmstudio, COUNT(*) AS views
+FROM WatchRecord WR
+    JOIN Video V ON (V.id = WR.videoid)
+    JOIN Language L ON (L.id = V.languageid)
+    LEFT JOIN FilmStudio FS ON (FS.id = V.filmstudioid)
+WHERE L.name = <language_name>
+GROUP BY V.id, L.id, FS.id
+ORDER BY views DESC
+LIMIT 10;
+
+\qecho By Actor:
+SELECT videonum, X.name, language, filmstudio, views
+FROM (
+    SELECT videonum, V.id, V.name, L.name AS language, FS.name AS filmstudio, COUNT(*) AS views
+    FROM WatchRecord WR
+        JOIN Video V ON (V.id = WR.videoid)
+        JOIN Language L ON (L.id = V.languageid)
+        LEFT JOIN FilmStudio FS ON (FS.id = V.filmstudioid)
+    GROUP BY V.id, L.id, FS.id
+) AS X
+    JOIN VideoToActor VTA ON (VTA.videoid = X.id)
+    JOIN Actor A ON (A.id = VTA.actorid)
+WHERE A.firstname = <firstname> AND A.lastname = <lastname>
+ORDER BY views DESC
+LIMIT 10;
+
+\qecho By FilmStudio:
+SELECT videonum, V.name, L.name AS language, FS.name AS filmstudio, COUNT(*) AS views
+FROM WatchRecord WR
+    JOIN Video V ON (V.id = WR.videoid)
+    JOIN Language L ON (L.id = V.languageid)
+    LEFT JOIN FilmStudio FS ON (FS.id = V.filmstudioid)
+WHERE FS.name = <filmstudio>
+GROUP BY V.id, L.id, FS.id
+ORDER BY views DESC
+LIMIT 10;
+
+\qecho By Genre AND Language
+SELECT videonum, X.name, language, filmstudio, views
+FROM (
+    SELECT videonum, V.id, V.name, L.name AS language, FS.name AS filmstudio, COUNT(*) AS views
+    FROM WatchRecord WR
+        JOIN Video V ON (V.id = WR.videoid)
+        JOIN Language L ON (L.id = V.languageid)
+        LEFT JOIN FilmStudio FS ON (FS.id = V.filmstudioid)
+    GROUP BY V.id, L.id, FS.id
+) AS X
+    JOIN VideoToGenre VTG ON (VTG.videoid = X.id)
+    JOIN Genre G ON (G.id = VTG.genreid)
+WHERE G.name = <genre_name> AND language = <language_name>
+ORDER BY views DESC
+LIMIT 10;
+
+\qecho By Genre AND Actor
+SELECT videonum, X.name, language, filmstudio, views
+FROM (
+    SELECT videonum, V.id, V.name, L.name AS language, FS.name AS filmstudio, COUNT(*) AS views
+    FROM WatchRecord WR
+        JOIN Video V ON (V.id = WR.videoid)
+        JOIN Language L ON (L.id = V.languageid)
+        LEFT JOIN FilmStudio FS ON (FS.id = V.filmstudioid)
+    GROUP BY V.id, L.id, FS.id
+) AS X
+    JOIN VideoToGenre VTG ON (VTG.videoid = X.id)
+    JOIN Genre G ON (G.id = VTG.genreid)
+    JOIN VideoToActor VTA ON (VTA.videoid = X.id)
+    JOIN Actor A ON (A.id = VTA.actorid)
+WHERE G.name = <genre_name> AND A.firstname = <firstname> AND A.lastname = <lastname>
+ORDER BY views DESC
+LIMIT 10;
+
+\qecho By Genre AND FilmStudio
+SELECT videonum, X.name, language, filmstudio, views
+FROM (
+    SELECT videonum, V.id, V.name, L.name AS language, FS.name AS filmstudio, COUNT(*) AS views
+    FROM WatchRecord WR
+        JOIN Video V ON (V.id = WR.videoid)
+        JOIN Language L ON (L.id = V.languageid)
+        LEFT JOIN FilmStudio FS ON (FS.id = V.filmstudioid)
+    GROUP BY V.id, L.id, FS.id
+) AS X
+    JOIN VideoToGenre VTG ON (VTG.videoid = X.id)
+    JOIN Genre G ON (G.id = VTG.genreid)
+WHERE G.name = <genre_name> AND filmstudio = <filmstudio_name>
+ORDER BY views DESC
+LIMIT 10;
+
+\qecho By Genre AND Language AND Actor
+SELECT videonum, X.name, language, filmstudio, views
+FROM (
+    SELECT videonum, V.id, V.name, L.name AS language, FS.name AS filmstudio, COUNT(*) AS views
+    FROM WatchRecord WR
+        JOIN Video V ON (V.id = WR.videoid)
+        JOIN Language L ON (L.id = V.languageid)
+        LEFT JOIN FilmStudio FS ON (FS.id = V.filmstudioid)
+    GROUP BY V.id, L.id, FS.id
+) AS X
+    JOIN VideoToGenre VTG ON (VTG.videoid = X.id)
+    JOIN Genre G ON (G.id = VTG.genreid)
+    JOIN VideoToActor VTA ON (VTA.videoid = X.id)
+    JOIN Actor A ON (A.id = VTA.actorid)
+WHERE G.name = <genre_name> AND language = <language_name> AND A.firstname = <firstname> AND A.lastname = <lastname>
+ORDER BY views DESC
+LIMIT 10;
+
+\qecho By Genre AND Language AND FilmStudio
+SELECT videonum, X.name, language, filmstudio, views
+FROM (
+    SELECT videonum, V.id, V.name, L.name AS language, FS.name AS filmstudio, COUNT(*) AS views
+    FROM WatchRecord WR
+        JOIN Video V ON (V.id = WR.videoid)
+        JOIN Language L ON (L.id = V.languageid)
+        LEFT JOIN FilmStudio FS ON (FS.id = V.filmstudioid)
+    GROUP BY V.id, L.id, FS.id
+) AS X
+    JOIN VideoToGenre VTG ON (VTG.videoid = X.id)
+    JOIN Genre G ON (G.id = VTG.genreid)
+WHERE G.name = <genre_name> AND language = <language_name> AND filmstudio = <filmstudio_name>
+ORDER BY views DESC
+LIMIT 10;
+
+\qecho By Genre AND Actor AND FilmStudio
+SELECT videonum, X.name, language, filmstudio, views
+FROM (
+    SELECT videonum, V.id, V.name, L.name AS language, FS.name AS filmstudio, COUNT(*) AS views
+    FROM WatchRecord WR
+        JOIN Video V ON (V.id = WR.videoid)
+        JOIN Language L ON (L.id = V.languageid)
+        LEFT JOIN FilmStudio FS ON (FS.id = V.filmstudioid)
+    GROUP BY V.id, L.id, FS.id
+) AS X
+    JOIN VideoToGenre VTG ON (VTG.videoid = X.id)
+    JOIN Genre G ON (G.id = VTG.genreid)
+    JOIN VideoToActor VTA ON (VTA.videoid = X.id)
+    JOIN Actor A ON (A.id = VTA.actorid)
+WHERE G.name = <genre_name> AND A.firstname = <firstname> AND A.lastname = <lastname> AND filmstudio = <filmstudio_name>
+ORDER BY views DESC
+LIMIT 10;
+
+\qecho By Genre AND Language AND Actor AND FilmStudio
+SELECT videonum, X.name, language, filmstudio, views
+FROM (
+    SELECT videonum, V.id, V.name, L.name AS language, FS.name AS filmstudio, COUNT(*) AS views
+    FROM WatchRecord WR
+        JOIN Video V ON (V.id = WR.videoid)
+        JOIN Language L ON (L.id = V.languageid)
+        LEFT JOIN FilmStudio FS ON (FS.id = V.filmstudioid)
+    GROUP BY V.id, L.id, FS.id
+) AS X
+    JOIN VideoToGenre VTG ON (VTG.videoid = X.id)
+    JOIN Genre G ON (G.id = VTG.genreid)
+    JOIN VideoToActor VTA ON (VTA.videoid = X.id)
+    JOIN Actor A ON (A.id = VTA.actorid)
+WHERE G.name = <genre_name> AND language = <language_name> AND A.firstname = <firstname> AND A.lastname = <lastname> AND filmstudio = <filmstudio_name>
+ORDER BY views DESC
+LIMIT 10;
+
+\qecho By Language AND Actor
+SELECT videonum, X.name, language, filmstudio, views
+FROM (
+    SELECT videonum, V.id, V.name, L.name AS language, FS.name AS filmstudio, COUNT(*) AS views
+    FROM WatchRecord WR
+        JOIN Video V ON (V.id = WR.videoid)
+        JOIN Language L ON (L.id = V.languageid)
+        LEFT JOIN FilmStudio FS ON (FS.id = V.filmstudioid)
+    GROUP BY V.id, L.id, FS.id
+) AS X
+    JOIN VideoToActor VTA ON (VTA.videoid = X.id)
+    JOIN Actor A ON (A.id = VTA.actorid)
+WHERE language = <language_name> AND A.firstname = <firstname> AND A.lastname = <lastname>
+ORDER BY views DESC
+LIMIT 10;
+
+\qecho By Language AND FilmStudio
+SELECT videonum, V.name, L.name AS language, FS.name AS filmstudio, COUNT(*) AS views
+FROM WatchRecord WR
+    JOIN Video V ON (V.id = WR.videoid)
+    JOIN Language L ON (L.id = V.languageid)
+    LEFT JOIN FilmStudio FS ON (FS.id = V.filmstudioid)
+WHERE L.name = <language_name> AND FS.name = <filmstudio_name>
+GROUP BY V.id, L.id, FS.id
+ORDER BY views DESC
+LIMIT 10;
+
+\qecho By Language AND Actor AND FilmStudio
+SELECT videonum, X.name, language, filmstudio, views
+FROM (
+    SELECT videonum, V.id, V.name, L.name AS language, FS.name AS filmstudio, COUNT(*) AS views
+    FROM WatchRecord WR
+        JOIN Video V ON (V.id = WR.videoid)
+        JOIN Language L ON (L.id = V.languageid)
+        LEFT JOIN FilmStudio FS ON (FS.id = V.filmstudioid)
+    GROUP BY V.id, L.id, FS.id
+) AS X
+    JOIN VideoToActor VTA ON (VTA.videoid = X.id)
+    JOIN Actor A ON (A.id = VTA.actorid)
+WHERE language = <language_name> AND A.firstname = <firstname> AND A.lastname = <lastname> AND filmstudio = <filmstudio_name>
+ORDER BY views DESC
+LIMIT 10;
+
+\qecho By Actor AND FilmStudio
+SELECT videonum, X.name, language, filmstudio, views
+FROM (
+    SELECT videonum, V.id, V.name, L.name AS language, FS.name AS filmstudio, COUNT(*) AS views
+    FROM WatchRecord WR
+        JOIN Video V ON (V.id = WR.videoid)
+        JOIN Language L ON (L.id = V.languageid)
+        LEFT JOIN FilmStudio FS ON (FS.id = V.filmstudioid)
+    GROUP BY V.id, L.id, FS.id
+) AS X
+    JOIN VideoToActor VTA ON (VTA.videoid = X.id)
+    JOIN Actor A ON (A.id = VTA.actorid)
+WHERE A.firstname = <firstname> AND A.lastname = <lastname> AND filmstudio = <filmstudio_name>
+ORDER BY views DESC
+LIMIT 10;

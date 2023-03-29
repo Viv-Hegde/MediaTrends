@@ -1,0 +1,225 @@
+/****************************** updateuserinfo.css ****************************/
+/* This file contains the code to style the updateuserinfo html page.
+/*
+/******************************************************************************/
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+}
+
+.navbar {
+    background-color: #333;
+    color: #fff;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 20px;
+}
+
+.navbar-menu button {
+    background-color: #333;
+    color: #fff;
+    border: none;
+    height: 50px;
+}
+
+.navbar-menu button:hover {
+    background-color: #8a8989;
+}
+
+.logo {
+    font-size: 24px;
+    margin: 0;
+}
+
+.navbar-menu {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.navbar-menu li {
+    display: inline-block;
+    margin-left: 20px;
+}
+
+.navbar-menu a {
+    color: #fff;
+    text-decoration: none;
+}
+
+.container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 20px;
+}
+
+span {
+    color: red;
+}
+
+/* h1 {
+    font-size: 36px;
+    margin-bottom: 30px;
+    text-align: center;
+} */
+
+h1 a {
+    text-decoration: none !important;
+}
+
+h1 a:visited {
+    text-decoration: none !important;
+    color: inherit;
+}
+
+
+h2 {
+    font-size: 16px;
+    margin-top: -20px;
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+h3 {
+    font-size: 24px;
+    text-align: center;
+    margin-bottom: 30px;
+    margin-top: 0px;
+}
+
+form {
+    width: 100%;
+    max-width: 900px;
+    padding: 30px;
+    border-radius: 4px;
+    background-color: #f2f2f2;
+    margin-top: 30px;
+}
+
+.element {
+    display: flex;
+    justify-content: space-between;
+}
+
+label {
+    display: block;
+    margin-top: 10px;
+    margin-bottom: 10px;
+    font-weight: bold;
+}
+
+input, select {
+    width: 50%;
+    padding: 10px;
+    margin-bottom: 20px;
+    border-radius: 4px;
+    border: none;
+    background-color: #e6e6e6;
+}
+
+select {
+    width: 52.25%;
+}
+
+.back-button {
+    background-color: #c20606;
+    border: none;
+    color: #fff;
+    padding: 12px 24px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    margin-bottom: 0px;
+    cursor: pointer;
+    border-radius: 4px;
+    width: 15%;
+    box-sizing: border-box;
+    position: relative;
+    right: 35%;
+}
+
+.back-button:hover {
+    background-color: #5c0701;
+}
+
+.reset-button {
+    background-color: #555555;
+    border: none;
+    color: #fff;
+    padding: 12px 24px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    margin-top: -20px;
+    margin-bottom: 30px;
+    cursor: pointer;
+    border-radius: 4px;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.reset-button:hover {
+    background-color: #232323;
+}
+
+.update-button {
+    background-color: #4CAF50;
+    border: none;
+    color: #fff;
+    padding: 12px 24px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    margin-top: 10px;
+    cursor: pointer;
+    border-radius: 4px;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.update-button:hover {
+    background-color: #006080;
+}
+
+.login-button {
+    background-color: #008CBA;
+    border: none;
+    color: #fff;
+    padding: 10px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    margin-top: 10px;
+    cursor: pointer;
+    border-radius: 4px;
+    width: 15%;
+    box-sizing: border-box;
+}
+
+.login-button:hover {
+    background-color: #006080;
+}
+
+#error-msg {
+    font-size: small;
+    color: red;
+    text-align: center;
+}
+
+#success-msg {
+    font-size: small;
+    color: green;
+    text-align: center;
+}
+
+.hidden {
+    /* Used to override other display properties,
+     * .hidden should always take highest precedence */
+    display: none !important;
+  }

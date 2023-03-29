@@ -1,0 +1,116 @@
+/****************************** signup.css **************************************
+/* This file contains the code to style the signup html page
+/*
+/******************************************************************************/
+body {
+    font-family: Arial, sans-serif;
+  }
+
+.container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 20px;
+}
+
+span {
+    color: red;
+}
+
+h1 {
+    font-size: 36px;
+    margin-bottom: 30px;
+    text-align: center;
+}
+
+h3 {
+    font-size: 24px;
+    text-align: center;
+    margin-bottom: 30px;
+    margin-top: 0px;
+}
+
+form {
+    width: 100%;
+    max-width: 900px;
+    padding: 30px;
+    border-radius: 4px;
+    background-color: #f2f2f2;
+}
+
+.element {
+    display: flex;
+    justify-content: space-between;
+}
+
+label {
+    display: block;
+    margin-top: 10px;
+    margin-bottom: 10px;
+    font-weight: bold;
+}
+
+input, select {
+    width: 50%;
+    padding: 10px;
+    margin-bottom: 20px;
+    border-radius: 4px;
+    border: none;
+    background-color: #e6e6e6;
+}
+
+select {
+    width: 52.25%;
+}
+
+.signup-button {
+    background-color: #4CAF50;
+    border: none;
+    color: #fff;
+    padding: 12px 24px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    margin-top: 10px;
+    cursor: pointer;
+    border-radius: 4px;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.signup-button:hover {
+    background-color: #006080;
+}
+
+.login-button {
+    background-color: #008CBA;
+    border: none;
+    color: #fff;
+    padding: 10px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    margin-top: 10px;
+    cursor: pointer;
+    border-radius: 4px;
+    width: 15%;
+    box-sizing: border-box;
+}
+
+.login-button:hover {
+    background-color: #006080;
+}
+
+#error-msg {
+    font-size: small;
+    color: red;
+    text-align: center;
+}
+
+.hidden {
+    /* Used to override other display properties,
+     * .hidden should always take highest precedence */
+    display: none !important;
+  }

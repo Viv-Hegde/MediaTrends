@@ -1,0 +1,95 @@
+CREATE TABLE Language (
+    ID            SERIAL not null,
+    Name          VARCHAR(20) not null,
+
+    Primary Key   (ID)
+);
+
+CREATE TABLE FilmStudio (
+    ID            SERIAL not null,
+    Name          VARCHAR(30) not null,
+
+    Primary Key   (ID)
+);
+
+CREATE TABLE Genre (
+    ID            SERIAL not null,
+    Name          VARCHAR(15) not null,
+
+    Primary Key   (ID)
+);
+
+CREATE TABLE Video (
+    ID            SERIAL not null,
+    VideoNum      VARCHAR(10) not null unique,
+    Name          VARCHAR(50) not null,
+    LanguageID    INTEGER not null,
+    Duration      INTERVAL not null,
+    FilmStudioID  INTEGER,
+    ReleaseDate   DATE not null,
+    UploadDate    TIMESTAMP not null,
+
+    Primary Key   (ID),
+    Foreign Key   (LanguageID) references Language(ID) Deferrable Initially Deferred,
+    Foreign Key   (FilmStudioID) references FilmStudio(ID) Deferrable Initially Deferred
+);
+
+CREATE TABLE VideoToGenre (
+    VideoID       INTEGER not null,
+    GenreID       INTEGER not null,
+
+    Primary Key   (VideoID, GenreID),
+    Foreign Key   (VideoID) references Video(ID) Deferrable Initially Deferred,
+    Foreign Key   (GenreID) references Genre(ID) Deferrable Initially Deferred
+);
+
+CREATE TABLE Actor (
+    ID            SERIAL not null,
+    FirstName     VARCHAR(30) not null,
+    LastName      VARCHAR(30) not null,
+
+    Primary Key   (ID)
+);
+
+CREATE TABLE VideoToActor (
+    VideoID       INTEGER not null,
+    ActorID       INTEGER not null,
+
+    Primary Key   (VideoID, ActorID),
+    Foreign Key   (VideoID) references Video(ID) Deferrable Initially Deferred,
+    Foreign Key   (ActorID) references Actor(ID) Deferrable Initially Deferred
+);
+
+CREATE TABLE State (
+    ID            CHAR(2) not null,
+    Name          VARCHAR(20) not null,
+
+    Primary Key   (ID)
+);
+
+CREATE TABLE Customer (
+    ID            SERIAL not null,
+    Username      VARCHAR(10) not null unique,
+    Password      VARCHAR(25) not null,
+    Email         VARCHAR(40) not null,
+    PhoneNumber   VARCHAR(10) not null,
+    Address1      VARCHAR(50) not null,
+    Address2      VARCHAR(50),
+    City          VARCHAR(20) not null,
+    StateID       CHAR(2) not null,
+    PostalCode    CHAR(5),
+
+    Primary Key   (ID),
+    Foreign Key   (StateID) references State(ID) Deferrable Initially Deferred
+);
+
+CREATE TABLE WatchRecord (
+    ID            SERIAL not null,
+    CustomerID    INTEGER not null,
+    VideoID       INTEGER not null,
+    WatchTime     TIMESTAMP not null,
+
+    Primary Key   (ID),
+    Foreign Key   (CustomerID) references Customer(ID) Deferrable Initially Deferred,
+    Foreign Key   (VideoID) references Video(ID) Deferrable Initially Deferred
+);

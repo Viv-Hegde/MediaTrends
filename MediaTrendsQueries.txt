@@ -1,0 +1,242 @@
+\qecho Most Popular/Trending:
+SELECT Video.name, Video.releasedate, Video.uploaddate
+FROM WatchRecord
+	JOIN Video ON ( Video.id = Watchrecord.videoid)
+GROUP BY Video.id
+ORDER BY Video.uploaddate DESC
+LIMIT 10;
+
+
+
+\qecho                                                                   Customer favorites:
+
+
+
+\qecho Customer favorite genre:
+SELECT Genre.name, COUNT(*) AS VideosWatched
+FROM Customer
+	JOIN Watchrecord ON ( Watchrecord.customerid = Customer.id)
+	JOIN Video ON ( Video.id = Watchrecord.videoid)
+	JOIN Videotogenre ON ( Video.id = Videotogenre.videoid)
+	JOIN Genre ON ( Videotogenre.genreid = Genre.id)
+WHERE Customer.username = 'vivi'
+GROUP BY Genre.ID
+ORDER BY VideosWatched Desc
+LIMIT 1;
+
+
+\qecho Customer favorite language:
+SELECT Language.name, COUNT (*) as count
+FROM Language
+	JOIN Video ON (Video.languageID = Language.id)
+	JOIN WatchRecord ON (WatchRecord.videoID = Video.id)
+	JOIN Customer ON (Customer.id = WatchRecord.customerid)
+WHERE Customer.username = 'vivi'
+GROUP BY Language.id
+ORDER BY count DESC
+LIMIT 1;
+
+\qecho Customer favorite film studios
+SELECT Filmstudio.name, COUNT (*) as count
+FROM FilmStudio
+	JOIN Video ON (Video.filmstudioID = FilmStudio.id)
+	JOIN WatchRecord ON (WatchRecord.videoID = Video.id)
+	JOIN Customer ON (Customer.id = WatchRecord.customerid)
+WHERE Customer.username = 'vivi'
+GROUP BY FilmStudio.id
+ORDER BY count DESC
+LIMIT 1;
+
+\qecho Customer favorite cast
+SELECT Actor.firstname, Actor.lastname, COUNT (*) AS count
+FROM Customer
+	JOIN Watchrecord ON ( Customer.id = Watchrecord.customerid)
+	JOIN Video ON ( Watchrecord.videoid = Video.id)
+	JOIN Videotoactor ON ( Videotoactor.videoid = Video.id)
+	JOIN Actor ON ( Actor.id = Videotoactor.Actorid)
+WHERE Customer.username = 'vivi'
+GROUP BY Actor.id
+ORDER BY count DESC
+LIMIT 1;
+
+\qecho Customer favorite video by watchtime
+SELECT Customer.username, Video.id, Video.name, Video.language, Video.duration, Video.filmstudioid, Video.releasedate, Video.uploaddate, SUM ( Watchrecord.watchtime) AS total_watchtime
+FROM Video
+	JOIN Watchrecord ON ( Video.id = Watchrecord.videoid)
+	JOIN Customer ON ( Customer.id = Watchrecord.customerid)
+WHERE Customer.id = <customer_id>
+GROUP BY Video.id
+ORDER BY total_watchtime DESC
+LIMIT 1;
+
+
+
+
+
+\qecho                                           Filter the results by genre, language, release date (new vs old), and duration
+
+
+
+
+\qecho Genre:
+SELECT Video.videonum, Video.name, Video.languageID, Video.filmstudioID, COUNT (*) AS watch_count
+FROM Video
+	JOIN Videotogenre ON ( Video.id = Videotogenre.videoid)
+	JOIN Genre ON ( Videotogenre.genreid = Genre.id)
+WHERE Genre.name = 'Action'
+GROUP BY Video.id
+ORDER BY watch_count DESC, Video.releasedate DESC
+LIMIT 10;
+
+\qecho Language:
+SELECT Video.videonum, Video.name, Video.releasedate, Video.language, COUNT (*) AS watch_count
+FROM Video
+	JOIN Language ON ( Video.languageid = Language.id)
+WHERE Language.name = <language>
+GROUP BY Video.id
+ORDER BY watch_count DESC, Video.releasedate DESC
+LIMIT 10;
+
+\qecho Release date (newest videos first)
+SELECT *
+FROM Video
+ORDER BY releasedate DESC;
+
+\qecho Release date (oldest videos first)
+SELECT *
+FROM Video
+ORDER BY releasedate ASC;
+
+\qecho Duration ( for example: videos that have a duratio between 30 and 60 minutes)
+SELECT *
+FROM Video
+WHERE duration BETWEEN 30 AND 60;
+
+\qecho Actor
+SELECT Video.videonum, Video.name, Video.language, Video.duration,
+       Video.filmstudioid, Video.releasedate, Video.uploaddate
+FROM Video
+	JOIN Videotoactor ON (Videotoactor.Videoid = Video.id)
+	JOIN Actor ON (Actor.id = Videotoactor.Actorid)
+WHERE Actor.id = <actor_id>
+GROUP BY Video.id;
+
+\qecho Filmstudio
+SELECT Video.videonum, Video.name, Filmstudio.name
+FROM Video
+	JOIN Filmstudio ON ( Video.filmstudioid = Filmstudio.id)
+WHERE Filmstudio.name = <filmstudio>
+GROUP BY Video.id;
+
+\qecho Video name
+SELECT Video.videonum, Video.name
+FROM Video
+WHERE name LIKE %<video_name>%;
+
+\qecho Genre + language
+SELECT Video.videonum, Video.name, Genre.name, Language.name, Video.duration, Video.releasedate
+FROM video
+	JOIN Videotogenre ON (Videotogenre.videoid = Video.id)
+	JOIN Genre ON (Genre.id = Videotogenre.genreid)
+	JOIN Language ON (Language.id = Video.languageid)
+WHERE Genre.name = '<genre>' AND Language.name = '<language>'
+GROUP BY Video.id;
+
+\qecho Genre + Actor
+SELECT Video.videonum, Video.name, Genre.name, Actor.firstname || ' ' || Actor.lastname AS actor
+FROM Video
+	JOIN Videotogenre ON ( Videotogenre.videoid = Video.id)
+	JOIN Genre ON ( Genre.id = Videotogenre.genreid)
+	JOIN Videotoactor ON ( Videotoactor.videoid = Video.id)
+	JOIN Actor ON ( Actor.id = Videotoactor.actorid)
+WHERE Genre.name = <genre> AND (Actor.firstname || ' ' || Actor.lastname) = <actor>
+GROUP BY Video.id;
+
+\qecho Genre + Filmstudio
+SELECT Video.videonum, Video.name, Genre.name, Filmstudio.name
+FROM Video
+	JOIN Videotogenre ON ( Videotogenre.videoid = Video.id)
+	JOIN Genre ON ( Genre.id = Videotogenre.genreid)
+	JOIN Filmstudio ON ( Video.filmstudioid = Filmstudio.id)
+WHERE Genre.name = <genre> AND Filmstudio.name = <filmstudio>
+GROUP BY Video.id;
+
+\qecho Language + Actor
+SELECT Video.videonum, Video.name, Language.name, Actor.firstname, Actor.lastname
+FROM Video
+	JOIN Videotoactor ON ( Videotoactor.videoid = Video.id)
+	JOIN Actor ON ( Actor.id = Videotoactor.actorid)
+	JOIN Language ON ( Language.id = Video.languageid)
+WHERE Language.name = <language> AND (Actor.firstname = <actor_firstname> AND Actor.lastname = <actor_lastname>)
+GROUP BY Video.id;
+
+\qecho Language + Filmstudio
+SELECT Video.videonum, Video.name, Language.name, Filmstudio.name
+FROM Video
+	JOIN Filmstudio ON ( Filmstudio.id = Video.filmstudioid)
+	JOIN Language ON ( Language.id = Video.languageid)
+WHERE Language.name = <language> AND Filmstudio.name = <filmstudio>
+GROUP BY Video.id;
+
+\qecho Actor + Filmstudio
+SELECT Video.videonum, Video.name, Filmstudio.name, Actor.firstname, Actor.lastname
+FROM Video
+	JOIN Videotoactor ON ( Videotoactor.videoid = Video.id)
+	JOIN Actor ON ( Actor.id = Videotoactor.actorid)
+	JOIN Filmstudio ON ( Filmstudio.id = Video.filmstudioid)
+WHERE Filmstudio.name = <filmstudio> AND ( Actor.firstname = <actor_firstname> AND Actor.lastname = <actor_lastname>)
+GROUP BY Video.id;
+
+\qecho Genre + Language + Actor
+SELECT Video.videonum, Video.name, Language.name, Genre.name, Actor.firstname, Actor.lastname
+FROM Video
+	JOIN Language ON (Language.id = Video.languageid)
+	JOIN Videotogenre ON (Videotogenre.videoid = Video.id)
+	JOIN Genre ON (Genre.id = Videotogenre.genreid)
+	JOIN Videotoactor ON (videotoactor.videoid = Video.id)
+	JOIN Actor ON (Actor.id = Videotoactor.actorid)
+WHERE Genre.name = <genre> AND Language.name = <language> AND Actor.firstname = <actor_firstname> AND Actor.lastname = <actor_lastname>
+GROUP BY Video.id;
+
+\qecho Genre + Language + Filmstudio
+SELECT Video.videonum, Video.name, Language.name, Genre.name, Filmstudio.name
+FROM Video
+	JOIN Language ON (Language.id = Video.languageid)
+	JOIN Videotogenre ON (Videotogenre.videoid = Video.id)
+	JOIN Genre ON (Genre.id = Videotogenre.genreid)
+	JOIN Filmstudio ON (Filmstudio.id = Video.filmstudioid)
+WHERE Genre.name = <genre> AND Language.name = <language> AND Filmstudio.name = <filmstudio>
+GROUP BY Video.id;
+
+\qecho Genre + Actor + Filmstudio
+SELECT Video.videonum, Video.name, Genre.name, Actor.firstname, Actor.lastname, Filmstudio.name
+FROM Video
+	JOIN Videotogenre ON (Videotogenre.videoid = Video.id)
+	JOIN Genre ON (Genre.id = Videotogenre.genreid)
+	JOIN Videotoactor ON (Videotoactor.videoid = Video.id)
+	JOIN Actor ON (Actor.id = Videotoactor.actorid)
+	JOIN Filmstudio ON (Filmstudio.id = Video.filmstudioid)
+WHERE Genre.name = <genre> AND Actor.firstname = <actor_firstname> AND Actor.lastname = <actor_lastname> AND Filmstudio.name = <filmstudio>
+GROUP BY Video.id;
+
+\qecho Language + Actor + Filmstudio
+SELECT Video.videonum, Video.name, Language.name, Actor.firstname, Actor.lastname, Filmstudio.name
+FROM Video
+	JOIN Language ON (Language.id = Video.languageid)
+	JOIN Videotoactor ON (Videotoactor.videoid = Video.id)
+	JOIN Actor ON (Actor.id = Videotoactor.actorid)
+	JOIN Filmstudio ON (Filmstudio.id = Video.filmstudioid)
+WHERE Language.name = <language> AND Actor.firstname = <actor_firstname> AND Actor.lastname = <actor_lastname> AND Filmstudio.name = <filmstudio>
+GROUP BY Video.id;
+
+\qecho Genre + Language + Actor + Filmstudio
+SELECT Video.videonum, Video.name, Language.name, Filmstudio.name, Genre.name, Actor.firstname, Actor.lastname, Video.duration
+FROM Video
+	JOIN Language ON (Language.id = Video.languageid)
+	JOIN Filmstudio ON (Filmstudio.id = Video.filmstudioid)
+	JOIN Videotoactor ON (videotoactor.videoid = Video.id)
+	JOIN Actor ON (Actor.id = Videotoactor.actorid)
+	JOIN Videotogenre ON (Videotogenre.videoid = Video.id)
+	JOIN Genre ON (Genre.id = Videotogenre.genreid)
+WHERE Language.name = <language> AND Fimstudio.name = <filmstudio> AND (Arcto.firstname = <actor_firstname> AND Actor.lastname = <actor_lastname>) AND Genre.name = <genre>
+GROUP BY Video.id;

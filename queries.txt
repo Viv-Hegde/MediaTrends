@@ -1,0 +1,152 @@
+INSERT INTO Customer (username, password, email, phonenumber, address1, address2, city, stateid, postalcode)
+  VALUES ('user1', 'qwerty', 'user@gmail.com', '2029993333', '1234 street', '', 'seattle', 'WA', '');
+
+UPDATE Customer
+SET password = '$2', email = '$3', phonenumber = '$4', address1 = '$5', address2 = '$6', city = '$7', stateid = '$8', postalcode = '$9'
+WHERE username = '$1';
+
+INSERT INTO Watchrecord (customerid, videoid, watchtime)
+VALUES ((SELECT Customer.id FROM Customer WHERE username = $1),
+(SELECT Video.id FROM Video WHERE videonum = $2), $3);
+
+
+SELECT y.videonum, y.name AS title, Language.name AS language, FilmStudio.name AS film_studio, y.views
+FROM (
+      SELECT Video.videonum, Video.name, Video.languageID, Video.uploaddate, Video.filmStudioID, x.views
+      FROM (
+            SELECT video.id, video.name, count(*) AS views
+            FROM Video
+            JOIN Watchrecord ON (Watchrecord.videoID = Video.id)
+            GROUP BY Video.id, Video.name
+          ) AS x
+          LEFT JOIN Video ON (x.id = video.id)
+  ) AS y
+    JOIN Language ON (y.languageID = Language.id)
+    LEFT JOIN FilmStudio ON (y.filmStudioID = FilmStudio.ID)
+ORDER BY y.views DESC, y.uploaddate DESC
+LIMIT 10;
+
+SELECT firstname, lastname
+FROM Actor
+    JOIN VideoToActor ON (VideoToActor.actorID = Actor.id)
+    JOIN Video ON (VideoToActor.videoID = Video.id)
+WHERE Video.videonum = 'W000000001';
+
+SELECT Genre.name
+FROM Genre
+    JOIN VideoToGenre ON (VideoToGenre.genreID = Genre.id)
+    JOIN Video ON (VideoToGenre.videoID = Video.id)
+WHERE Video.videonum = 'W000000001';
+
+SELECT Genre.name, COUNT(*) AS VideosWatched
+FROM Customer
+	JOIN Watchrecord ON ( Watchrecord.customerid = Customer.id)
+	JOIN Video ON ( Video.id = Watchrecord.videoid)
+	JOIN Videotogenre ON ( Video.id = Videotogenre.videoid)
+	JOIN Genre ON ( Videotogenre.genreid = Genre.id)
+WHERE Customer.username = $1
+GROUP BY Genre.ID
+ORDER BY VideosWatched Desc
+LIMIT 1;
+
+
+// popular videos for a given genre
+
+SELECT videonum, Video.name AS title, Language.name AS language, FilmStudio.name AS filmstudio, y.views
+FROM Video
+    JOIN (
+          SELECT x.id, COUNT(*) AS views
+          FROM (
+            SELECT Video.id
+            FROM Video
+              JOIN Videotogenre ON (Video.id = Videotogenre.videoid)
+              JOIN Genre ON (Videotogenre.genreid = Genre.id)
+            WHERE Genre.name = $1
+          ) AS x
+          JOIN Watchrecord ON (x.id = Watchrecord.videoid)
+          GROUP BY x.id
+        ) AS y ON (y.id = Video.id)
+    JOIN Language ON (Video.languageID = Language.id)
+    LEFT JOIN FilmStudio ON (FilmStudio.id = Video.filmStudioID)
+ORDER BY views DESC
+LIMIT 10;
+
+
+
+
+// popular videos for a given language
+
+SELECT videonum, Video.name AS title, Language.name AS language, FilmStudio.name AS filmstudio, y.views
+FROM Video
+    JOIN (
+          SELECT x.id, COUNT(*) AS views
+          FROM (
+            SELECT Video.id
+            FROM Video
+              JOIN Language ON (Video.languageid = Language.id)
+            WHERE Language.name = 'English'
+          ) AS x
+          JOIN Watchrecord ON (x.id = Watchrecord.videoid)
+          GROUP BY x.id
+        ) AS y ON (y.id = Video.id)
+    JOIN Language ON (Video.languageID = Language.id)
+    LEFT JOIN FilmStudio ON (FilmStudio.id = Video.filmStudioID)
+ORDER BY views DESC
+LIMIT 10;
+
+
+
+
+
+// popular videos for a given film studio
+
+SELECT videonum, Video.name AS title, Language.name AS language, FilmStudio.name AS filmstudio, y.views
+FROM Video
+    JOIN (
+          SELECT x.id, COUNT(*) AS views
+          FROM (
+            SELECT Video.id
+            FROM Video
+              JOIN FilmStudio ON (Video.filmStudioID = FilmStudio.id)
+            WHERE Filmstudio.name = '20th Century Fox'
+          ) AS x
+          JOIN Watchrecord ON (x.id = Watchrecord.videoid)
+          GROUP BY x.id
+        ) AS y ON (y.id = Video.id)
+    JOIN Language ON (Video.languageID = Language.id)
+    LEFT JOIN FilmStudio ON (FilmStudio.id = Video.filmStudioID)
+ORDER BY views DESC
+LIMIT 10;
+
+
+
+// popular videos for a given actor
+
+SELECT videonum, Video.name AS title, Language.name AS language, FilmStudio.name AS filmstudio, y.views
+FROM Video
+    JOIN (
+          SELECT x.id, COUNT(*) AS views
+          FROM (
+            SELECT Video.id
+            FROM Video
+              JOIN VideotoActor ON (Video.id = VideotoActor.videoid)
+              JOIN Actor ON (VideotoActor.actorID = Actor.id)
+            WHERE Actor.id = $1
+          ) AS x
+          JOIN Watchrecord ON (x.id = Watchrecord.videoid)
+          GROUP BY x.id
+        ) AS y ON (y.id = Video.id)
+    JOIN Language ON (Video.languageID = Language.id)
+    LEFT JOIN FilmStudio ON (FilmStudio.id = Video.filmStudioID)
+ORDER BY views DESC
+LIMIT 10;
+
+
+
+SELECT CASE WHEN EXISTS (
+          SELECT *
+          FROM Actor
+          WHERE firstname = 'Chris' AND lastname = 'Evans'
+      ) THEN TRUE
+      ELSE FALSE
+      END;
